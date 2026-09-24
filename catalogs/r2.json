@@ -1,0 +1,12 @@
+{
+  "model": "R2",
+  "catalog_version": 1,
+  "signals": [
+    {"id": 1025, "name": "vehicle_speed", "type": "u32", "endian": "little", "scale": 0.001, "offset": 0.0,   "unit": "km/h"},
+    {"id": 1026, "name": "battery_soc",   "type": "u16", "endian": "big",    "scale": 0.01,  "offset": 0.0,   "unit": "%"},
+    {"id": 1027, "name": "motor_temp",    "type": "f32", "endian": "big",    "scale": 1.0,   "offset": 0.0,   "unit": "C"},
+    {"id": 1030, "name": "gear",          "type": "u8",  "enum": {"1": "P", "2": "R", "3": "N", "4": "D"}},
+    {"id": 1031, "name": "door_open",     "type": "bool"},
+    {"id": 1040, "name": "cabin_temp",    "type": "i16", "endian": "big",    "scale": 0.1,   "offset": 0.0,   "unit": "C"}
+  ]
+}

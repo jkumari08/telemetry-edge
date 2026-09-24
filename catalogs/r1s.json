@@ -1,0 +1,11 @@
+{
+  "model": "R1S",
+  "catalog_version": 3,
+  "signals": [
+    {"id": 257, "name": "vehicle_speed", "type": "u16", "endian": "big",    "scale": 0.01, "offset": 0.0,   "unit": "km/h"},
+    {"id": 258, "name": "battery_soc",   "type": "u8",  "endian": "little", "scale": 0.5,  "offset": 0.0,   "unit": "%"},
+    {"id": 259, "name": "motor_temp",    "type": "i16", "endian": "little", "scale": 0.1,  "offset": -40.0, "unit": "C"},
+    {"id": 300, "name": "gear",          "type": "u8",  "endian": "little", "enum": {"0": "P", "1": "R", "2": "N", "3": "D"}},
+    {"id": 301, "name": "door_open",     "type": "bool"}
+  ]
+}

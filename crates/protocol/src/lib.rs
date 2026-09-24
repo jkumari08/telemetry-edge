@@ -3,20 +3,20 @@
 //! Frame encoding/decoding, signal catalog types, rule set types and the
 //! signed rule set envelope. This crate performs no network or filesystem I/O.
 
-#![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+#![deny(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
 
-/// Packet magic, `"TE"` in ASCII, big-endian.
-pub const MAGIC: u16 = 0x5445;
+pub mod catalog;
+pub mod value;
+pub mod wire;
 
-/// Current wire protocol version.
-pub const VERSION: u8 = 1;
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn magic_is_te() {
-        assert_eq!(MAGIC.to_be_bytes(), *b"TE");
-    }
-}
+pub use catalog::{Catalog, CatalogError, CatalogSpec, Endian, Signal, SignalDef, SignalType};
+pub use value::SignalValue;
+pub use wire::{
+    decode_packet, encode_frame, encode_packet, DecodedPacket, EncodeError, FrameError,
+    FrameErrorKind, PacketError, RawFrame, Sample,
+};
