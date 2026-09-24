@@ -2,7 +2,7 @@
 
 Rule-driven vehicle telemetry logger in Rust with cloud-managed rules, binary signal decoding, and Prometheus metering.
 
-> Status: work in progress, built milestone by milestone. Currently at **M3 (rules engine)**.
+> Status: work in progress, built milestone by milestone. Currently at **M4 (daemon end to end, rules from a local file)**.
 
 ## Workspace
 
@@ -29,17 +29,30 @@ cargo run -p simulator -- --help
 cargo run -p cloud -- --help
 ```
 
-## Try it: live decoding
+## Try it locally
 
 Run from the repo root in two terminals.
 
 ```sh
-# Terminal 1: daemon prints every decoded sample (stdout) and decode error (stderr)
-cargo run -p telemetryd -- --config dev/config.toml --debug-decode
+# Terminal 1: the daemon applies rulesets/default.json and writes telemetry to dev/state/out/
+cargo run -p telemetryd -- --config dev/config.toml
 
 # Terminal 2: simulated R1S driving at 50 packets/s
 cargo run -p simulator -- --catalog catalogs/r1s.json --scenario drive
+
+# Terminal 3: watch the rule-driven log records
+tail -f dev/state/out/telemetry.ndjson
 ```
+
+Example record:
+
+```json
+{"ts_us":1790270675517932,"vin":"DEV0000002","model":"R2","rule_id":"hot_motor","ruleset_version":1,"signal":"motor_temp","value":90.116,"unit":"C"}
+```
+
+- **Output files:** `telemetry.ndjson` rotates at `output.max_file_bytes` (10 MiB by default). Up to `output.max_files` files are kept in total (5 by default).
+- **Shutdown:** Ctrl-C or SIGTERM stops ingest, drains queued samples through the engine, then flushes and syncs the output file.
+- **Debugging:** `--debug-decode` also prints every decoded sample (stdout) and every rejected packet or frame (stderr).
 
 - **Scenarios:**
   - `drive`: 60 s cycle of P, then D with a speed ramp to ~115 km/h (motor temperature crosses 90 °C), then back to P.

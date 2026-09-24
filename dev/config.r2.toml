@@ -3,6 +3,13 @@
 vin = "DEV0000002"
 model = "R2"
 catalog_path = "catalogs/r2.json"
+# Temporary until the cloud rule sync (M5): unsigned local rule set.
+rules_file = "rulesets/default.json"
 
 [ingest]
 udp_bind = "127.0.0.1:5005"
+
+[output]
+log_dir = "dev/state/out-r2"
+max_file_bytes = 10485760
+max_files = 5

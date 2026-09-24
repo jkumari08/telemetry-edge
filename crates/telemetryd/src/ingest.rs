@@ -1,4 +1,4 @@
-//! UDP ingest: receive datagrams and decode them against the catalog.
+//! UDP ingest: receive datagrams, decode them, and forward samples.
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -7,6 +7,7 @@ use std::time::Duration;
 use protocol::wire::MAX_DATAGRAM_LEN;
 use protocol::{decode_packet, Catalog, Sample};
 use tokio::net::UdpSocket;
+use tokio::sync::{mpsc, watch};
 use tracing::{info, warn};
 
 /// Running totals, reported periodically and at shutdown.
@@ -32,15 +33,29 @@ impl IngestStats {
     }
 }
 
-/// Receives and decodes datagrams until the future is dropped, calling
-/// `on_sample` for every decoded sample.
+fn print_sample(catalog: &Catalog, s: &Sample) {
+    let unit = catalog
+        .by_id(s.signal_id)
+        .and_then(|c| c.unit())
+        .unwrap_or("");
+    let value = match s.value.as_num() {
+        Some(v) => format!("{v:.3}"),
+        None => s.value.to_string(),
+    };
+    println!("{} {:<14} {value} {unit}", s.timestamp_us, s.name);
+}
+
+/// Receives and decodes datagrams until `stop` flips to true, forwarding
+/// samples to the engine. Dropping `samples` on return lets the engine
+/// drain and finish.
 pub async fn run_udp(
     socket: UdpSocket,
     catalog: Arc<Catalog>,
-    stats: &mut IngestStats,
+    samples: mpsc::Sender<Sample>,
     debug_decode: bool,
-    mut on_sample: impl FnMut(Sample),
-) -> std::io::Result<()> {
+    mut stop: watch::Receiver<bool>,
+) -> std::io::Result<IngestStats> {
+    let mut stats = IngestStats::default();
     // Larger than the protocol maximum so oversize datagrams are received
     // (and rejected as `oversize`) rather than silently truncated to a valid length.
     let mut buf = vec![0u8; MAX_DATAGRAM_LEN * 2];
@@ -73,11 +88,20 @@ pub async fn run_udp(
                         if debug_decode && d.unknown_signals > 0 {
                             warn!(%peer, count = d.unknown_signals, "unknown signal ids skipped");
                         }
-                        d.samples.into_iter().for_each(&mut on_sample);
+                        for sample in d.samples {
+                            if debug_decode {
+                                print_sample(&catalog, &sample);
+                            }
+                            if samples.send(sample).await.is_err() {
+                                return Ok(stats); // engine gone
+                            }
+                        }
                     }
                 }
             }
             _ = report.tick() => stats.log(),
+            _ = stop.changed() => break,
         }
     }
+    Ok(stats)
 }
