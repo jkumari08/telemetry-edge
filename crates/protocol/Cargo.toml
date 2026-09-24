@@ -1,0 +1,13 @@
+[package]
+name = "protocol"
+description = "Wire format encode/decode, signal catalog, rule types and signing envelope (no I/O)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+
+[lints]
+workspace = true

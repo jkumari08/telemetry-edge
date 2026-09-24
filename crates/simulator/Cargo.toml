@@ -1,0 +1,15 @@
+[package]
+name = "simulator"
+description = "Fake vehicle bus that emits telemetry frames"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+protocol = { workspace = true }
+
+[lints]
+workspace = true

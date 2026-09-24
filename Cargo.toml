@@ -1,0 +1,36 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/protocol",
+    "crates/rules",
+    "crates/telemetryd",
+    "crates/simulator",
+    "crates/cloud",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+# Direct dependencies are pinned exactly (see docs/DECISIONS.md D-002).
+[workspace.dependencies]
+protocol = { path = "crates/protocol" }
+rules = { path = "crates/rules" }
+
+anyhow = "=1.0.104"
+clap = { version = "=4.6.7", features = ["derive"] }
+thiserror = "=2.0.20"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

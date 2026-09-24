@@ -1,0 +1,3 @@
+# `protocol` and `rules` deny unwrap/expect on library code; tests may still use them.
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true
