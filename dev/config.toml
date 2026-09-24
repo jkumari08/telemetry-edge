@@ -1,0 +1,8 @@
+# Local development config (R1S). Paths are relative to the repo root;
+# run from there: cargo run -p telemetryd -- --config dev/config.toml
+vin = "DEV0000001"
+model = "R1S"
+catalog_path = "catalogs/r1s.json"
+
+[ingest]
+udp_bind = "127.0.0.1:5005"
