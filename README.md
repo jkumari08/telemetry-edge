@@ -2,7 +2,7 @@
 
 Rule-driven vehicle telemetry logger in Rust with cloud-managed rules, binary signal decoding, and Prometheus metering.
 
-> Status: work in progress, built milestone by milestone. Currently at **M2 (simulator)**.
+> Status: work in progress, built milestone by milestone. Currently at **M3 (rules engine)**.
 
 ## Workspace
 
@@ -51,3 +51,4 @@ cargo run -p simulator -- --catalog catalogs/r1s.json --scenario drive
 ## Docs
 
 - Wire format and catalogs: [`docs/PROTOCOL.md`](docs/PROTOCOL.md)
+- Rule schema, semantics and condition language: [`docs/RULES.md`](docs/RULES.md)

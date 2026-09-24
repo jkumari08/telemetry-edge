@@ -11,10 +11,14 @@
 )]
 
 pub mod catalog;
+pub mod ruleset;
 pub mod value;
 pub mod wire;
 
-pub use catalog::{Catalog, CatalogError, CatalogSpec, Endian, Signal, SignalDef, SignalType};
+pub use catalog::{
+    Catalog, CatalogError, CatalogSpec, Endian, Signal, SignalDef, SignalType, ValueKind,
+};
+pub use ruleset::{Mode, Rule, RuleSet, ANY_MODEL};
 pub use value::SignalValue;
 pub use wire::{
     decode_packet, encode_frame, encode_packet, DecodedPacket, EncodeError, FrameError,

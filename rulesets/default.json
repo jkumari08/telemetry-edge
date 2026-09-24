@@ -1,0 +1,13 @@
+{
+  "ruleset_version": 1,
+  "model": "*",
+  "rules": [
+    {"id": "soc_change",    "signal": "battery_soc",   "mode": "on_change", "deadband": 1.0},
+    {"id": "speed_1hz",     "signal": "vehicle_speed", "mode": "periodic",  "interval_ms": 1000},
+    {"id": "gear_change",   "signal": "gear",          "mode": "on_change"},
+    {"id": "hot_motor",     "signal": "motor_temp",    "mode": "periodic",  "interval_ms": 200,
+     "condition": "motor_temp > 90.0 && gear == 'D'"},
+    {"id": "low_soc_drive", "signal": "vehicle_speed", "mode": "on_change", "deadband": 0.5,
+     "condition": "gear == 'D' && battery_soc < 20.0"}
+  ]
+}

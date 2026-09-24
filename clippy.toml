@@ -1,3 +1,4 @@
-# `protocol` and `rules` deny unwrap/expect on library code; tests may still use them.
+# `protocol` and `rules` deny unwrap/expect/indexing on library code; tests may still use them.
 allow-unwrap-in-tests = true
 allow-expect-in-tests = true
+allow-indexing-slicing-in-tests = true
